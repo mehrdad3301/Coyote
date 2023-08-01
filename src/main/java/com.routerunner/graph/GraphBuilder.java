@@ -1,0 +1,119 @@
+package main.java.com.routerunner.graph;
+
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+/**
+GraphBuilder builds graph by parsing OpenStreetMap xml data
+ */
+public class GraphBuilder {
+    
+    private XMLStreamReader streamReader ;
+    private Graph graph ;
+
+    /* idMapping is a mapping from OSM id to graph node */
+    private HashMap<Long, Integer> idMapping ;
+    public GraphBuilder(String fileAddress) throws Exception {
+        graph = new Graph() ;
+        idMapping = new HashMap<>() ;
+        XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+        InputStream in = new FileInputStream(fileAddress);
+        streamReader = inputFactory.createXMLStreamReader(in);
+        streamReader.nextTag(); // Skip root element
+    }
+
+    /**
+     * OSM has first nodes and then ways. buildGraph
+     * first parses nodes and adds them to the underlying graph.
+     * it will then parse ways and add arcs to adjacencyList.
+     *
+     * @return the built graph
+     * @throws XMLStreamException
+     */
+    public Graph buildGraph() throws XMLStreamException {
+        parseNodes() ;
+        parseWays() ;
+        return graph;
+    }
+
+    private void parseNodes() throws XMLStreamException {
+        while (streamReader.hasNext()) {
+            streamReader.next() ;
+            if (!streamReader.isStartElement())
+                continue;
+            if (isNode()) {
+                Node node = getNode();
+                idMapping.put(node.osmId, graph.numNodes);
+                graph.addNode(node) ;
+            } else if (isWay()) {
+                //end of nodes, return
+                return;
+            }
+        }
+    }
+
+    private void parseWays() throws XMLStreamException {
+        // take first way. this is because it's immediately called after parseNodes
+        ArrayList<Integer> wayNodes = getWayNodes();
+        addArcs(wayNodes);
+        while (streamReader.hasNext()) {
+            streamReader.next() ;
+            if (!streamReader.isStartElement())
+                continue;
+            wayNodes = getWayNodes();
+            addArcs(wayNodes);
+        }
+    }
+
+    private ArrayList<Integer> getWayNodes() throws XMLStreamException {
+        ArrayList<Integer> wayNodes = new ArrayList<>() ;
+        while (streamReader.hasNext() && !(streamReader.isEndElement() && isWay())) {
+            streamReader.next();
+            if (streamReader.isStartElement() && isNodeReference()) {
+                long osmId = Long.parseLong(streamReader.getAttributeValue(null, "ref"));
+                wayNodes.add(idMapping.get(osmId));
+            }
+        }
+        return wayNodes ;
+    }
+
+    private void addArcs(ArrayList<Integer> wayNodes) {
+        for (int i = 0; i < wayNodes.size() - 1; i++) {
+            int sourceNodeId = wayNodes.get(i);
+            int targetNodeId = wayNodes.get(i + 1);
+            while (graph.adjacencyList.size() <= sourceNodeId ||
+                    graph.adjacencyList.size() <= targetNodeId) {
+                graph.adjacencyList.add(new ArrayList<>());
+            }
+            graph.addEdge(sourceNodeId, targetNodeId) ;
+            graph.addEdge(targetNodeId, sourceNodeId) ;
+        }
+    }
+
+
+    private Node getNode() {
+        long osmId = Long.parseLong(streamReader.getAttributeValue(null, "id"));
+        float lat = Float.parseFloat(streamReader.getAttributeValue(null, "lat"));
+        float lon = Float.parseFloat(streamReader.getAttributeValue(null, "lon"));
+        return new Node(osmId, lat, lon) ;
+    }
+
+    private boolean isNode() throws XMLStreamException {
+        return ("node".equals(streamReader.getLocalName())) ;
+    }
+
+    private boolean isWay() throws XMLStreamException {
+        return ("way".equals(streamReader.getLocalName())) ;
+    }
+
+    private boolean isNodeReference() throws XMLStreamException {
+        return ("nd".equals(streamReader.getLocalName())) ;
+    }
+
+}

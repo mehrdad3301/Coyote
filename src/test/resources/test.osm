@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<osm version="0.6" generator="pbf2osm">
+	<node id="110" lat="49.3413853" lon="7.3014897" version="4" changeset="9382609" />
+	<node id="212" lat="49.3434814" lon="7.3036952" version="3" changeset="9382609"  />
+	<node id="393" lat="49.2629899" lon="7.3179590" version="14" changeset="3484469" />
+	<node id="402" lat="49.2628288" lon="7.3186161" version="12" changeset="3484469" />
+	<way id="1" version="3" changeset="5004797" >
+    		<nd ref="110"/>
+    		<nd ref="212"/>
+    		<tag k="highway" v="path" />
+    </way>
+	<way id="2" version="3" changeset="5004797" >
+    		<nd ref="110"/>
+    		<nd ref="393"/>
+    		<tag k="highway" v="path" />
+    </way>
+	<way id="2" version="3" changeset="5004797" >
+    		<nd ref="110"/>
+    		<nd ref="402"/>
+    		<tag k="highway" v="path" />
+    </way>
+	<way id="5" version="3" changeset="5004797" >
+    		<nd ref="212"/>
+    		<nd ref="393"/>
+    		<tag k="highway" v="path" />
+    </way>
+    <way id="6" version="3" changeset="5004797" >
+        		<nd ref="393"/>
+        		<nd ref="402"/>
+        		<tag k="highway" v="path" />
+    </way>
+</osm>

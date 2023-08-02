@@ -4,19 +4,20 @@ import main.java.com.routerunner.graph.Node;
 
 public class GeoMath {
 
-    public static final float EarthRadiusKM = 6378.137F;
+    public static final float EarthRadiusKM = 6371.009F;
 
-    public static int getHaversineDistance(Point start, Point end) {
+    /**
+     * @return haversine distance between two points in kilometers.
+     */
+    public static double getHaversineDistance(Point start, Point end) {
 
-        double dLat = end.lat * Math.PI - start.lat * Math.PI ;
-        double dLon = end.lon * Math.PI - start.lon * Math.PI ;
-        double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                Math.cos(start.lat * Math.PI / 180) * Math.cos(end.lat * Math.PI / 180) *
-                        Math.sin(dLon/2) * Math.sin(dLon/2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        double d = EarthRadiusKM * c;
-        return (int) d * 1000; // meters
+        double dLat = Math.toRadians(end.lat - start.lat) ;
+        double dLon = Math.toRadians(end.lon - start.lon) ;
+        double a = Math.pow(Math.sin(dLat/2), 2) + Math.pow(Math.sin(dLon/2), 2) *
+                Math.cos(Math.toRadians(start.lat)) * Math.cos(Math.toRadians(end.lat)) ;
+        return 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)) * EarthRadiusKM ;
     }
+
 
 }
 

@@ -26,8 +26,8 @@ public class Way {
      * this will be used as weight in our graph.
      */
     public int getCost(Node start, Node end) {
-        int distance = getHaversineDistance(start.toPoint(), end.toPoint()) ;
-        return distance / type.getSpeedLimit() * 60;
+        double distance = getHaversineDistance(start.toPoint(), end.toPoint()) ;
+        return (int) distance / type.getSpeedLimit() * 60;
     }
 
 }

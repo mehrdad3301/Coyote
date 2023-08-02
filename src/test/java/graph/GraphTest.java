@@ -12,13 +12,37 @@ public class GraphTest {
         Graph graph = Graph.buildFromOSM("./src/test/resources/test.osm") ;
         assertEquals(graph.toString(), """
                 Graph{
-                numEdges=10,
-                numNodes=4,
+                numEdges=16,
+                numNodes=6,
                 adjecency matrix= {
-                \t0= 1,2,3,
-                \t1= 0,2,
-                \t2= 0,1,3,
-                \t3= 0,2,
+                	0= {
+                		4:8
+                		5:13
+                		1:3
+                        
+                	1= {
+                		0:3
+                		2:6
+                        
+                	2= {
+                		5:11
+                		3:6
+                		1:6
+                        
+                	3= {
+                		5:6
+                		2:6
+                        
+                	4= {
+                		0:8
+                		5:7
+                        
+                	5= {
+                		0:13
+                		2:11
+                		3:6
+                		4:7
+                        
                 }""");
     }
 }

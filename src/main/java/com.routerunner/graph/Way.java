@@ -27,7 +27,7 @@ public class Way {
      */
     public int getCost(Node start, Node end) {
         double distance = getHaversineDistance(start.toPoint(), end.toPoint()) ;
-        return (int) distance / type.getSpeedLimit() * 60;
+        return (int) (distance / (1.00 * type.getSpeedLimit()) * 60) ;
     }
 
 }

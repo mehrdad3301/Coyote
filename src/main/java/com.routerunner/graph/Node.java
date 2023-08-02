@@ -1,6 +1,6 @@
 package main.java.com.routerunner.graph;
 
-import main.java.com.routerunner.util.Point;
+import main.java.com.routerunner.geo.Point;
 
 /**
  * Node is an Open Street Map data structure. it will represent

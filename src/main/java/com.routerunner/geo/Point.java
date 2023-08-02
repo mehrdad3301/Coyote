@@ -1,6 +1,4 @@
-package main.java.com.routerunner.util;
-
-import main.java.com.routerunner.graph.Node;
+package main.java.com.routerunner.geo;
 
 public class Point {
 

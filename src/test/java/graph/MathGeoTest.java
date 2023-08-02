@@ -1,9 +1,9 @@
 package test.java.graph;
 
-import main.java.com.routerunner.util.Point;
+import main.java.com.routerunner.geo.Point;
 import org.junit.Test;
 
-import static main.java.com.routerunner.util.GeoMath.getHaversineDistance;
+import static main.java.com.routerunner.geo.GeoMath.getHaversineDistance;
 import static org.junit.Assert.assertEquals;
 
 public class MathGeoTest {

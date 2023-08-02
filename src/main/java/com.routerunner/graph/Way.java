@@ -2,7 +2,7 @@ package main.java.com.routerunner.graph;
 
 import java.util.ArrayList;
 
-import static main.java.com.routerunner.util.GeoMath.getHaversineDistance;
+import static main.java.com.routerunner.geo.GeoMath.getHaversineDistance;
 
 /**
  * way is an Open Street Map data structures. it will be used

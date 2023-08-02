@@ -16,7 +16,7 @@ public class GraphBuilder {
     private final XMLStreamReader streamReader ;
     private final Graph graph ;
 
-    /* idMapping is a mapping from OSM id to graph node id*/
+    /* idMapping is a mapping from OSM id to graph node id */
     private final HashMap<Long, Integer> idMapping ;
     public GraphBuilder(String fileAddress) throws Exception {
         graph = new Graph() ;
@@ -50,7 +50,7 @@ public class GraphBuilder {
                 idMapping.put(node.osmId, graph.numNodes);
                 graph.addNode(node) ;
             } else if (isWay()) {
-                //end of nodes, return
+                // end of nodes, return
                 return;
             }
         }
@@ -101,7 +101,6 @@ public class GraphBuilder {
             graph.addEdge(targetNodeId, sourceNodeId, cost) ;
         }
     }
-
 
     private Node getNode() {
         long osmId = Long.parseLong(streamReader.getAttributeValue(null, "id"));

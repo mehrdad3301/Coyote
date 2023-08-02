@@ -10,14 +10,15 @@ public class GraphTest {
     @Test
     public void TestOSMParser() throws Exception {
         Graph graph = Graph.buildFromOSM("./src/test/resources/test.osm") ;
-        assertEquals(graph.toString(), "Graph{\n" +
-                "numEdges=10,\n" +
-                "numNodes=4,\n" +
-                "adjecency matrix= {\n" +
-                "\t0= 1,2,3,\n" +
-                "\t1= 0,2,\n" +
-                "\t2= 0,1,3,\n" +
-                "\t3= 0,2,\n" +
-                "}");
+        assertEquals(graph.toString(), """
+                Graph{
+                numEdges=10,
+                numNodes=4,
+                adjecency matrix= {
+                \t0= 1,2,3,
+                \t1= 0,2,
+                \t2= 0,1,3,
+                \t3= 0,2,
+                }""");
     }
 }

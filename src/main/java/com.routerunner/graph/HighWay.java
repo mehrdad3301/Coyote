@@ -23,7 +23,8 @@ public enum HighWay {
     UNCLASSIFIED("unclassified", 40),
     RESIDENTIAL("residential", 30),
     UNSURFACED("unsurfaced", 30),
-    LIVING_STREET("living_street", 10);
+    LIVING_STREET("living_street", 10),
+    SERVICE("service", 5);
 
     private final String type;
     private final int speedLimit;
@@ -53,6 +54,6 @@ public enum HighWay {
     public static HighWay getByName(String type) {
         if (BY_NAME.get(type) != null)
             return BY_NAME.get(type) ;
-        return UNCLASSIFIED ;
+        return null;
     }
 }

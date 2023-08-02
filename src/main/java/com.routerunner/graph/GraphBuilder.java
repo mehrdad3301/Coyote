@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
-GraphBuilder builds the graph by parsing OpenStreetMap xml data
+GraphBuilder builds the graph by parsing Open Street Map xml data
  */
 public class GraphBuilder {
     
@@ -28,7 +28,7 @@ public class GraphBuilder {
     }
 
     /**
-     * OSM has first <node> and then <way>s. buildGraph
+     * OSM has first <node>s and then <way>s. buildGraph
      * first parses nodes and adds them to the underlying graph.
      * it will then parse ways and add arcs to adjacencyList.
      *

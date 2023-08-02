@@ -3,7 +3,9 @@ package main.java.com.routerunner.graph;
 import main.java.com.routerunner.util.Point;
 
 /**
-Node represents a vertex in road network graph
+ * Node is an Open Street Map data structure. it will represent
+ * vertices in our graph model.
+ * <a href="https://wiki.openstreetmap.org/wiki/Node">...</a>
  */
 public class Node {
     long osmId ;
@@ -14,18 +16,6 @@ public class Node {
         this.osmId = osrmId;
         this.lat = lat;
         this.lon = lon;
-    }
-
-    public long getOsmId() {
-        return osmId;
-    }
-
-    public float getLat() {
-        return lat;
-    }
-
-    public float getLon() {
-        return lon;
     }
 
     public Point toPoint() {

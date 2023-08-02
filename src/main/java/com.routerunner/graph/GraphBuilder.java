@@ -1,7 +1,6 @@
 package main.java.com.routerunner.graph;
 
 import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.io.FileInputStream;
@@ -10,15 +9,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
-GraphBuilder builds graph by parsing OpenStreetMap xml data
+GraphBuilder builds the graph by parsing OpenStreetMap xml data
  */
 public class GraphBuilder {
     
-    private XMLStreamReader streamReader ;
-    private Graph graph ;
+    private final XMLStreamReader streamReader ;
+    private final Graph graph ;
 
-    /* idMapping is a mapping from OSM id to graph node */
-    private HashMap<Long, Integer> idMapping ;
+    /* idMapping is a mapping from OSM id to graph node id*/
+    private final HashMap<Long, Integer> idMapping ;
     public GraphBuilder(String fileAddress) throws Exception {
         graph = new Graph() ;
         idMapping = new HashMap<>() ;
@@ -29,12 +28,11 @@ public class GraphBuilder {
     }
 
     /**
-     * OSM has first nodes and then ways. buildGraph
+     * OSM has first <node> and then <way>s. buildGraph
      * first parses nodes and adds them to the underlying graph.
      * it will then parse ways and add arcs to adjacencyList.
      *
      * @return the built graph
-     * @throws XMLStreamException
      */
     public Graph buildGraph() throws XMLStreamException {
         parseNodes() ;
@@ -60,39 +58,47 @@ public class GraphBuilder {
 
     private void parseWays() throws XMLStreamException {
         // take first way. this is because it's immediately called after parseNodes
-        ArrayList<Integer> wayNodes = getWayNodes();
-        addArcs(wayNodes);
+        Way way = getWay() ; 
+        addArcs(way);
         while (streamReader.hasNext()) {
             streamReader.next() ;
             if (!streamReader.isStartElement())
                 continue;
-            wayNodes = getWayNodes();
-            addArcs(wayNodes);
+            way = getWay();
+            addArcs(way);
         }
     }
 
-    private ArrayList<Integer> getWayNodes() throws XMLStreamException {
-        ArrayList<Integer> wayNodes = new ArrayList<>() ;
+    private Way getWay() throws XMLStreamException {
+        ArrayList<Integer> nodesIds = new ArrayList<>() ;
+        HighWay type = HighWay.UNCLASSIFIED;
         while (streamReader.hasNext() && !(streamReader.isEndElement() && isWay())) {
             streamReader.next();
-            if (streamReader.isStartElement() && isNodeReference()) {
-                long osmId = Long.parseLong(streamReader.getAttributeValue(null, "ref"));
-                wayNodes.add(idMapping.get(osmId));
+            if (streamReader.isStartElement()){
+                if (isNodeReference()) {
+                    long osmId = Long.parseLong(streamReader.getAttributeValue(null, "ref"));
+                    nodesIds.add(idMapping.get(osmId));
+                } else if (isTagElement()) {
+                    if (isHighWayTag()) {
+                        type = getHighWay() ;
+                    }
+                }
             }
         }
-        return wayNodes ;
+        return new Way(nodesIds, type) ;
     }
 
-    private void addArcs(ArrayList<Integer> wayNodes) {
-        for (int i = 0; i < wayNodes.size() - 1; i++) {
-            int sourceNodeId = wayNodes.get(i);
-            int targetNodeId = wayNodes.get(i + 1);
+    private void addArcs(Way way) {
+        for (int i = 0; i < way.nodesIds.size() - 1; i++) {
+            int sourceNodeId = way.nodesIds.get(i);
+            int targetNodeId = way.nodesIds.get(i + 1);
             while (graph.adjacencyList.size() <= sourceNodeId ||
                     graph.adjacencyList.size() <= targetNodeId) {
                 graph.adjacencyList.add(new ArrayList<>());
             }
-            graph.addEdge(sourceNodeId, targetNodeId) ;
-            graph.addEdge(targetNodeId, sourceNodeId) ;
+            int cost = way.getCost(graph.nodes.get(sourceNodeId), graph.nodes.get(targetNodeId)) ;
+            graph.addEdge(sourceNodeId, targetNodeId, cost) ;
+            graph.addEdge(targetNodeId, sourceNodeId, cost) ;
         }
     }
 
@@ -102,6 +108,11 @@ public class GraphBuilder {
         float lat = Float.parseFloat(streamReader.getAttributeValue(null, "lat"));
         float lon = Float.parseFloat(streamReader.getAttributeValue(null, "lon"));
         return new Node(osmId, lat, lon) ;
+    }
+
+    private HighWay getHighWay() {
+        String highwayName = streamReader.getAttributeValue(null, "v");
+        return HighWay.getByName(highwayName) ;
     }
 
     private boolean isNode() throws XMLStreamException {
@@ -114,6 +125,15 @@ public class GraphBuilder {
 
     private boolean isNodeReference() throws XMLStreamException {
         return ("nd".equals(streamReader.getLocalName())) ;
+    }
+
+    private boolean isTagElement() throws XMLStreamException {
+        return ("tag".equals(streamReader.getLocalName())) ;
+    }
+
+    private boolean isHighWayTag() throws XMLStreamException {
+        String key = streamReader.getAttributeValue(null, "k");
+        return "highway".equals(key) ;
     }
 
 }

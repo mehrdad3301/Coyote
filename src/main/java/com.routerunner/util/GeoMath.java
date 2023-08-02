@@ -6,7 +6,6 @@ public class GeoMath {
 
     public static final float EarthRadiusKM = 6378.137F;
 
-
     public static int getHaversineDistance(Point start, Point end) {
 
         double dLat = end.lat * Math.PI - start.lat * Math.PI ;

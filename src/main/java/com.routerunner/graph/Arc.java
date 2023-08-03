@@ -1,4 +1,4 @@
-package main.java.com.routerunner.graph;
+package com.routerunner.graph;
 
 /**
  * Arc is used as an edge in road network graph.

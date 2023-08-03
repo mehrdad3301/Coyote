@@ -1,4 +1,4 @@
-package main.java.com.routerunner.graph;
+package com.routerunner.graph;
 
 import java.util.HashMap;
 import java.util.Map;

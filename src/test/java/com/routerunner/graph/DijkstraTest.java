@@ -1,7 +1,7 @@
-package test.java.graph;
+package com.routerunner.graph;
 
-import main.java.com.routerunner.algorithms.Dijkstra;
-import main.java.com.routerunner.graph.Graph;
+import com.routerunner.algorithms.Dijkstra;
+import com.routerunner.graph.Graph;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

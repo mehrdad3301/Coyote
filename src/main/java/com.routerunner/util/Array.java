@@ -1,4 +1,4 @@
-package main.java.com.routerunner.util;
+package com.routerunner.util;
 
 import java.util.ArrayList;
 

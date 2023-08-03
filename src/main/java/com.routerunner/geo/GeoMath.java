@@ -1,4 +1,4 @@
-package main.java.com.routerunner.geo;
+package com.routerunner.geo;
 
 public class GeoMath {
 

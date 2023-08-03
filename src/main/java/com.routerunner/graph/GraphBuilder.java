@@ -1,4 +1,9 @@
-package main.java.com.routerunner.graph;
+package com.routerunner.graph;
+
+import com.routerunner.graph.Graph;
+import com.routerunner.graph.Way;
+import com.routerunner.graph.HighWay;
+import com.routerunner.graph.Node;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;

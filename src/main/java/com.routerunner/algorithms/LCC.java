@@ -1,7 +1,7 @@
-package main.java.com.routerunner.algorithms;
+package com.routerunner.algorithms;
 
 
-import main.java.com.routerunner.graph.Graph;
+import com.routerunner.graph.Graph;
 
 import java.util.ArrayList;
 import java.util.HashMap;

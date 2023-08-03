@@ -58,8 +58,9 @@ public class GraphBuilder {
 
     private void parseWays() throws XMLStreamException {
         // take first way. this is because it's immediately called after parseNodes
-        Way way = getWay() ; 
-        addArcs(way);
+        Way way = getWay() ;
+        if (way != null)
+            addArcs(way);
         while (streamReader.hasNext()) {
             streamReader.next() ;
             if (!streamReader.isStartElement())
@@ -67,8 +68,9 @@ public class GraphBuilder {
             if(isRelation())
                 return ;
             way = getWay();
-            if (way != null)
+            if (way != null) {
                 addArcs(way);
+            }
         }
     }
 

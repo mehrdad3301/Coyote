@@ -64,14 +64,18 @@ public class GraphBuilder {
             streamReader.next() ;
             if (!streamReader.isStartElement())
                 continue;
+            if(isRelation())
+                return ;
             way = getWay();
-            addArcs(way);
+            if (way != null)
+                addArcs(way);
         }
     }
 
+
     private Way getWay() throws XMLStreamException {
         ArrayList<Integer> nodesIds = new ArrayList<>() ;
-        HighWay type = HighWay.UNCLASSIFIED;
+        HighWay type = null ;
         while (streamReader.hasNext() && !(streamReader.isEndElement() && isWay())) {
             streamReader.next();
             if (streamReader.isStartElement()){
@@ -84,6 +88,9 @@ public class GraphBuilder {
                     }
                 }
             }
+        }
+        if (type == null) {
+            return null ;
         }
         return new Way(nodesIds, type) ;
     }
@@ -98,7 +105,6 @@ public class GraphBuilder {
             }
             int cost = way.getCost(graph.nodes.get(sourceNodeId), graph.nodes.get(targetNodeId)) ;
             graph.addEdge(sourceNodeId, targetNodeId, cost) ;
-            graph.addEdge(targetNodeId, sourceNodeId, cost) ;
         }
     }
 
@@ -133,6 +139,11 @@ public class GraphBuilder {
     private boolean isHighWayTag() throws XMLStreamException {
         String key = streamReader.getAttributeValue(null, "k");
         return "highway".equals(key) ;
+    }
+
+    private boolean isRelation() {
+        String key = streamReader.getAttributeValue(null, "k");
+        return "relation".equals(key);
     }
 
 }

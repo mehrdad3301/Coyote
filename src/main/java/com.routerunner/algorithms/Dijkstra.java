@@ -2,39 +2,55 @@ package main.java.com.routerunner.algorithms;
 
 import main.java.com.routerunner.graph.Arc;
 import main.java.com.routerunner.graph.Graph;
-import main.java.com.routerunner.graph.Node;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.PriorityQueue;
+import java.util.*;
 
 public class Dijkstra {
 
-    private final Graph graph ;
+    final Graph graph;
+    int mark;
+    ArrayList<Integer> visited;
 
     public Dijkstra(Graph graph) {
-        this.graph = graph ;
+        this.graph = graph;
+        this.mark = 1;
     }
 
-    public int computeShortestPath(int sourceNodeId, int targetNodeId) {
-        PriorityQueue<Pair> pq = new PriorityQueue<>(Comparator.comparingInt(p -> p.distance)) ;
-        ArrayList<Boolean> visited = new ArrayList<>(Collections.nCopies(graph.getNumNodes(), false));
+    /**
+     * @return cost of the shortest path from sourceNodeId to targetNodeId,
+     * if targetNodeId is -1, it finds the shortest path to all nodes and
+     * then returns -1
+     */
+    public int getShortestPath(int sourceNodeId, int targetNodeId) {
+        clearVisited();
+        return computeShortestPath(sourceNodeId, targetNodeId);
+    }
 
+    /**
+     * computeShortestPath is used by other algorithms, for example LCC. It's
+     * callers responsibility to take care of visited array and handle it as they wish.
+     */
+    protected int computeShortestPath(int sourceNodeId, int targetNodeId) {
+        PriorityQueue<Pair> pq = new PriorityQueue<>(Comparator.comparingInt(p -> p.distance)) ;
         pq.add(new Pair(sourceNodeId, 0)) ;
         while (!pq.isEmpty()) {
-           Pair e = pq.poll() ;
-           if (e.id == targetNodeId) {
-               return e.distance ;
-           }
-           for (Arc arc : graph.getAdjacenct(e.id)) {
-               if (visited.get(arc.getHeadNodeId()))
-                   continue ;
-               pq.add(new Pair(arc.getHeadNodeId(), e.distance + arc.getCost()));
-           }
-           visited.set(e.id, true) ;
+            Pair e = pq.poll() ;
+            if (e.id == targetNodeId) {
+                return e.distance ;
+            }
+            for (Arc arc : graph.getAdjacent(e.id)) {
+                if (visited.get(arc.getHeadNodeId()) != 0)
+                    continue ;
+                pq.add(new Pair(arc.getHeadNodeId(), e.distance + arc.getCost()));
+            }
+            visited.set(e.id, mark) ;
         }
         return -1 ;
+    }
+
+
+    public void clearVisited() {
+        visited = new ArrayList<>(Collections.nCopies(graph.getNumNodes(), 0));
     }
 
     static class Pair {
@@ -47,7 +63,4 @@ public class Dijkstra {
         }
 
     }
-
-
-
 }

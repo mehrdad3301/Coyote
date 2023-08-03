@@ -1,12 +1,11 @@
 package com.routerunner.graph;
 
 import com.routerunner.algorithms.Dijkstra;
-import com.routerunner.graph.Graph;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class DijkstraTest {
+public class TestDijkstra {
     @Test
     public void DijkstraSimple() throws Exception {
 

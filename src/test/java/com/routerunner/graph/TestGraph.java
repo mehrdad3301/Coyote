@@ -1,11 +1,10 @@
 package com.routerunner.graph;
 
-import com.routerunner.graph.Graph;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class GraphTest {
+public class TestGraph {
 
     @Test
     public void TestOSMParser() throws Exception {

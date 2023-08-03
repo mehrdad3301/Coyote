@@ -6,7 +6,7 @@ import org.junit.Test;
 import static com.routerunner.geo.GeoMath.getHaversineDistance;
 import static org.junit.Assert.assertEquals;
 
-public class MathGeoTest {
+public class TestMathGeo {
 
     @Test
     public void TestHaversineDistance() {

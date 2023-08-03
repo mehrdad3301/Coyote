@@ -51,14 +51,15 @@ public class LCC {
      * removes nodes not present in largest connected component
      */
     private void removeExtraNodes(int maxId) {
-        ArrayList<Integer> nodes = new ArrayList<>() ;
-        for (int i = 0 ; i < graph.getNumNodes() ; i ++) {
-            if (dijkstra.visited.get(i) != maxId) {
-                nodes.add(i) ;
-            }
+        ArrayList<Integer> mask = new ArrayList<>(dijkstra.visited.size()) ;
+        for (int num: dijkstra.visited) {
+           if (num == maxId) {
+              mask.add(1) ;
+              continue ;
+           }
+            mask.add(0) ;
         }
-
-        graph.removeNodes(nodes) ;
+        graph.removeNodes(mask) ;
     }
 
     private int getMaxComponentId() {

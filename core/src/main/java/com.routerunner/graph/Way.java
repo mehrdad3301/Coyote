@@ -22,12 +22,12 @@ public class Way {
     /**
      * @return the cost of traversing from start to end in our model.
      * it is calculated by dividing haversine distance by speed limits,
-     * which roughly estimates travel time in minutes.
+     * which roughly estimates travel time in seconds.
      * this will be used as weight in our graph.
      */
     public int getCost(Node start, Node end) {
         double distance = getHaversineDistance(start.toPoint(), end.toPoint()) ;
-        return (int) (distance / (1.00 * type.getSpeedLimit()) * 60) ;
+        return (int) (distance / (1.00 * type.getSpeedLimit()) * 60 * 60) ;
     }
 
 }

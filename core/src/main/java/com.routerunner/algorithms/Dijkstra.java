@@ -53,6 +53,10 @@ public class Dijkstra {
         visited = new ArrayList<>(Collections.nCopies(graph.getNumNodes(), 0));
     }
 
+    public int getNumVisitedNodes() {
+        return visited.size() - Collections.frequency(visited, 0) ;
+    }
+
     static class Pair {
         int id ;
         int distance ;
@@ -61,6 +65,5 @@ public class Dijkstra {
             this.id = id;
             this.distance = distance;
         }
-
     }
 }

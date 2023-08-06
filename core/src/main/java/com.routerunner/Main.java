@@ -1,4 +1,4 @@
-package com.routerunner ;
+package com.routerunner;
 
 import com.routerunner.graph.Graph ;
 
@@ -6,7 +6,7 @@ class Main {
     public static void main(String[] args) throws Exception {
 
         long startTime = System.currentTimeMillis();
-        Graph g = Graph.buildFromOSM("./src/main/resources/baden-wuerttemberg.osm") ;
+        Graph g = Graph.buildFromOSM("core/src/main/resources/baden-wuerttemberg.osm") ;
         g.reduceToLargestConnectedComponent();
         long endTime = System.currentTimeMillis();
 

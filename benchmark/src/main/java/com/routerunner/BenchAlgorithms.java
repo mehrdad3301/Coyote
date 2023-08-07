@@ -44,7 +44,7 @@ public class BenchAlgorithms {
                 int max = graph.getNumNodes() ;
                 int source = ThreadLocalRandom.current().nextInt(0, max);
                 int target = ThreadLocalRandom.current().nextInt(0, max);
-                int cost = dij.getShortestPath(source, target) ;
+                int cost = dij.computeShortestPath(source, target).getCost() ;
                 sumCost += cost ;
                 sumSettledNodes += dij.getNumVisitedNodes();
             }

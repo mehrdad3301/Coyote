@@ -11,16 +11,19 @@ public class TestDijkstra {
 
         Graph graph = Graph.buildFromOSM("./src/test/resources/graph_test_1.osm");
         Dijkstra dij = new Dijkstra(graph);
-        assertEquals(dij.computeShortestPath(1, 3), 730);
-        assertEquals(dij.computeShortestPath(4, 3), 828);
-        assertEquals(dij.computeShortestPath(4, 2), 1049 );
+        assertEquals(dij.computeShortestPath(1, 3).getCost(), 730);
+        assertEquals(dij.computeShortestPath(4, 3).getCost(), 828);
+        assertEquals(dij.computeShortestPath(4, 2).getCost(), 1049 );
 
         graph = Graph.buildFromOSM("./src/test/resources/graph_test_2.osm");
         dij = new Dijkstra(graph);
-        assertEquals(dij.computeShortestPath(4, 2), 616);
-        assertEquals(dij.computeShortestPath(4, 3), 852);
-        assertEquals(dij.computeShortestPath(0, 6), 1637);
-        assertEquals(dij.computeShortestPath(2, 3), 360);
+        assertEquals(dij.computeShortestPath(4, 2).getCost(), 616);
+        Path path = dij.computeShortestPath(4, 3) ;
+        assertEquals(path.toString(), "Path 104 - 324 > 101 - 528 > 103 - 0 > ");
+        assertEquals(dij.computeShortestPath(2, 3).getCost(), 360);
+        path = dij.computeShortestPath(0, 6) ;
+        assertEquals(path.toString(), "Path 100 - 485 > 104 - 616 > 102 - 536 > 106 - 0 > ");
+        assertEquals(path.getCost(), 1637);
     }
 
     @Test
@@ -96,7 +99,7 @@ public class TestDijkstra {
                 	3= {
                 		0:823
                                 
-                t}""") ;
+                }""") ;
     }
 }
 

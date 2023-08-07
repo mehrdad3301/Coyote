@@ -29,7 +29,7 @@ public class GraphBuilder {
     }
 
     /**
-     * OSM has first <node>s and then <way>s. buildGraph
+     * OSM has first <node> tags and then <way> tags. buildGraph
      * first parses nodes and adds them to the underlying graph.
      * it will then parse ways and add arcs to adjacencyList.
      *
@@ -123,23 +123,23 @@ public class GraphBuilder {
         return HighWay.getByName(highwayName) ;
     }
 
-    private boolean isNode() throws XMLStreamException {
+    private boolean isNode() {
         return ("node".equals(streamReader.getLocalName())) ;
     }
 
-    private boolean isWay() throws XMLStreamException {
+    private boolean isWay() {
         return ("way".equals(streamReader.getLocalName())) ;
     }
 
-    private boolean isNodeReference() throws XMLStreamException {
+    private boolean isNodeReference() {
         return ("nd".equals(streamReader.getLocalName())) ;
     }
 
-    private boolean isTagElement() throws XMLStreamException {
+    private boolean isTagElement() {
         return ("tag".equals(streamReader.getLocalName())) ;
     }
 
-    private boolean isHighWayTag() throws XMLStreamException {
+    private boolean isHighWayTag() {
         String key = streamReader.getAttributeValue(null, "k");
         return "highway".equals(key) ;
     }

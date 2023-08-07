@@ -3,9 +3,7 @@ package com.routerunner.algorithms;
 
 import com.routerunner.graph.Graph;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * CC stands for connected components. It uses dijkstra
@@ -16,8 +14,10 @@ public class LCC {
     private final Dijkstra dijkstra ;
     private final Graph graph ;
 
+    private final ArrayList<ArrayList<Integer>> components ;
     public LCC(Graph graph) {
         this.dijkstra = new Dijkstra(graph) ;
+        this.components = new ArrayList<>() ;
         this.graph = graph ;
     }
 
@@ -26,58 +26,43 @@ public class LCC {
      * in road network. Road networks mostly have one component that contains most nodes.
      */
     public void reduceToLargestComponent() {
-        findAllComponents() ;
-        int maxId = getMaxComponentId() ;
-        removeExtraNodes(maxId); ;
+        getAllComponents() ;
+        int index = getLargestComponent() ;
+        reduceToComponent(index) ;
     }
 
     /**
-     * finaAllComponents initializes visited array. It will then call dijkstra till every
-     * node is visited. Each time it increments mark. the resulting visited array shows
-     * every component in the dijkstra.graph. for instance in [1, 1, 1, 1, 2, 3, 2, 2] the connected
-     * components are (0, 1, 2, 3) - (4, 6, 7) - (5)
      */
-    private void findAllComponents() {
-        dijkstra.clearVisited();
+    private void getAllComponents() {
+        ArrayList<Integer> seen =  new ArrayList<>(Collections.nCopies(graph.getNumNodes(), 0)) ;
         for (int i = 0; i < graph.getNumNodes(); i++) {
-            if (dijkstra.visited.get(i) == 0) {
+                if (seen.get(i) == 1)
+                    continue ;
                 dijkstra.computeShortestPath(i, -1);
-                dijkstra.mark++;
+                ArrayList<Integer> component = new ArrayList<>(dijkstra.getNumVisitedNodes()) ;
+                for (int j = 0 ; j < dijkstra.visited.size() ; j++) {
+                    if (dijkstra.visited.get(j) == 1) {
+                        component.add(j);
+                        seen.set(j, 1) ;
+                    }
+                }
+                components.add(component) ;
+        }
+    }
+
+    private void reduceToComponent(int index) {
+        graph.removeNodes(components.get(index)) ;
+    }
+
+    private int getLargestComponent() {
+        int max = 0 ;
+        int index = 0 ;
+        for (int i = 0 ; i < components.size() ; i++) {
+            if (components.get(i).size() > max) {
+                max = components.get(i).size() ;
+                index = i ;
             }
         }
+        return index ;
     }
-
-    /**
-     * removes nodes not present in largest connected component
-     */
-    private void removeExtraNodes(int maxId) {
-        ArrayList<Integer> mask = new ArrayList<>(dijkstra.visited.size()) ;
-        for (int num: dijkstra.visited) {
-           if (num == maxId) {
-              mask.add(1) ;
-              continue ;
-           }
-            mask.add(0) ;
-        }
-        graph.removeNodes(mask) ;
-    }
-
-    private int getMaxComponentId() {
-        HashMap<Integer, Integer> countMap = new HashMap<>();
-        for (int num : dijkstra.visited) {
-            countMap.put(num, countMap.getOrDefault(num, 0) + 1);
-        }
-
-        int maxKey = -1 ;
-        int maxValue = 0 ;
-        for (Map.Entry<Integer, Integer> entry : countMap.entrySet()) {
-            if (entry.getValue().compareTo(maxValue) > 0) {
-                maxKey = entry.getKey();
-                maxValue = entry.getValue();
-            }
-        }
-        return maxKey ;
-    }
-
-
 }

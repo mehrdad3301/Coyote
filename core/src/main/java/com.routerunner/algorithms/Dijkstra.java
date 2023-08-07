@@ -3,34 +3,30 @@ package com.routerunner.algorithms;
 import com.routerunner.graph.Arc;
 import com.routerunner.graph.Graph;
 
+import java.net.Inet4Address;
 import java.util.*;
 
 public class Dijkstra {
 
-    final Graph graph;
-    int mark;
-    ArrayList<Integer> visited;
+    final Graph graph ;
+
+    // indicate wether a node was visited by last call to dijkstra
+    ArrayList<Integer> visited ;
+    // parent pointers computed by last call to dijkstra
+    ArrayList<Integer> parents ;
+    // distance from source to all settled nodes in dijkstra
+    ArrayList<Integer> distances ;
 
     public Dijkstra(Graph graph) {
         this.graph = graph;
-        this.mark = 1;
+        visited = new ArrayList<>(Collections.nCopies(graph.getNumNodes(), 0)) ;
+        parents = new ArrayList<>(Collections.nCopies(graph.getNumNodes(), -1)) ;
+        distances = new ArrayList<>(Collections.nCopies(graph.getNumNodes(), Integer.MAX_VALUE)) ;
     }
 
-    /**
-     * @return cost of the shortest path from sourceNodeId to targetNodeId,
-     * if targetNodeId is -1, it finds the shortest path to all nodes and
-     * then returns -1
-     */
-    public int getShortestPath(int sourceNodeId, int targetNodeId) {
-        clearVisited();
-        return computeShortestPath(sourceNodeId, targetNodeId);
-    }
 
-    /**
-     * computeShortestPath is used by other algorithms, for example LCC. It's
-     * callers responsibility to take care of visited array and handle it as they wish.
-     */
-    protected int computeShortestPath(int sourceNodeId, int targetNodeId) {
+    public int computeShortestPath(int sourceNodeId, int targetNodeId) {
+        clearLists();
         PriorityQueue<Pair> pq = new PriorityQueue<>(Comparator.comparingInt(p -> p.distance)) ;
         pq.add(new Pair(sourceNodeId, 0)) ;
         while (!pq.isEmpty()) {
@@ -39,18 +35,24 @@ public class Dijkstra {
                 return e.distance ;
             }
             for (Arc arc : graph.getAdjacent(e.id)) {
-                if (visited.get(arc.getHeadNodeId()) != 0)
+                int dst = arc.getHeadNodeId() ;
+                if (visited.get(dst) != 0)
                     continue ;
+                if (distances.get(dst) < e.distance + arc.getCost())
+                    continue ;
+                parents.set(dst, e.id) ;
+                distances.set(dst, e.distance + arc.getCost()) ;
                 pq.add(new Pair(arc.getHeadNodeId(), e.distance + arc.getCost()));
             }
-            visited.set(e.id, mark) ;
+            visited.set(e.id, 1) ;
         }
         return -1 ;
     }
 
-
-    public void clearVisited() {
-        visited = new ArrayList<>(Collections.nCopies(graph.getNumNodes(), 0));
+    private void clearLists() {
+        visited.replaceAll(ignored -> 0);
+        distances.replaceAll(ignored -> Integer.MAX_VALUE);
+        parents.replaceAll(ignored -> -1);
     }
 
     public int getNumVisitedNodes() {

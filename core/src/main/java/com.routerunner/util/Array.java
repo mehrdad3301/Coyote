@@ -20,16 +20,8 @@ public class Array {
     }
     public static ArrayList<Integer> createMask(ArrayList<Integer> numbers, int len) {
        ArrayList<Integer> mask = new ArrayList<>(Collections.nCopies(len, 0)) ;
-       int j = 0 ;
-       for (int i = 0; i < len ; i ++) {
-           if (j >= numbers.size())
-              mask.set(i, 0) ;
-           else if (i < numbers.get(j))
-               mask.set(i, 0) ;
-           else if (i == numbers.get(j)) {
-               mask.set(i, 1);
-               j++ ;
-           }
+       for (int num: numbers) {
+           mask.set(num, 1) ;
        }
        return mask ;
     }

@@ -23,7 +23,7 @@ public class LCC {
 
     /**
      * reduceToLargestConnectedComponent keeps only the largest connected component
-     * in road network. Road networks mostly have one component that contains most nodes.
+     * in the graph. Road networks mostly have one component that contains most nodes.
      */
     public void reduceToLargestComponent() {
         getAllComponents() ;
@@ -32,6 +32,7 @@ public class LCC {
     }
 
     /**
+     * adds every connected component to member variable components
      */
     private void getAllComponents() {
         ArrayList<Integer> seen =  new ArrayList<>(Collections.nCopies(graph.getNumNodes(), 0)) ;
@@ -50,6 +51,9 @@ public class LCC {
         }
     }
 
+    /**
+     * reduces the graph to component pointed by index
+     */
     private void reduceToComponent(int index) {
         graph.removeNodes(components.get(index)) ;
     }

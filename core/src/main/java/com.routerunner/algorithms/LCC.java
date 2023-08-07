@@ -14,10 +14,9 @@ public class LCC {
     private final Dijkstra dijkstra ;
     private final Graph graph ;
 
-    private final ArrayList<ArrayList<Integer>> components ;
+    private ArrayList<ArrayList<Integer>> components ;
     public LCC(Graph graph) {
         this.dijkstra = new Dijkstra(graph) ;
-        this.components = new ArrayList<>() ;
         this.graph = graph ;
     }
 
@@ -27,46 +26,51 @@ public class LCC {
      */
     public void reduceToLargestComponent() {
         getAllComponents() ;
-        int index = getLargestComponent() ;
-        reduceToComponent(index) ;
+        reduceToComponent(getLargestId()) ;
     }
 
     /**
-     * adds every connected component to member variable components
+     * adds every connected component to member variable components by running
+     * dijkstra until every node in the graph is visited
+     *
      */
     private void getAllComponents() {
-        ArrayList<Integer> seen =  new ArrayList<>(Collections.nCopies(graph.getNumNodes(), 0)) ;
         for (int i = 0; i < graph.getNumNodes(); i++) {
-                if (seen.get(i) == 1)
+                if (dijkstra.visited.get(i) != 0)
                     continue ;
-                dijkstra.computeShortestPath(i, -1);
-                ArrayList<Integer> component = new ArrayList<>(dijkstra.getNumVisitedNodes()) ;
-                for (int j = 0 ; j < dijkstra.visited.size() ; j++) {
-                    if (dijkstra.visited.get(j) == 1) {
-                        component.add(j);
-                        seen.set(j, 1) ;
-                    }
-                }
-                components.add(component) ;
+                dijkstra.getShortestPath(i, -1);
+                dijkstra.mark ++ ;
+        }
+        components = new ArrayList<>(dijkstra.mark) ;
+        for (int i = 0 ; i < dijkstra.mark ; i++) {
+            components.add(new ArrayList<>());
+        }
+        for (int i = 0 ; i < dijkstra.visited.size() ; i++ ) {
+            components.get(dijkstra.visited.get(i) - 1).add(i) ;
         }
     }
 
     /**
-     * reduces the graph to component pointed by index
+     * reduces the graph to the component pointed by index
      */
     private void reduceToComponent(int index) {
         graph.removeNodes(components.get(index)) ;
     }
 
-    private int getLargestComponent() {
+    /**
+     * @return the id of the largest connected component
+     */
+    private int getLargestId() {
+
         int max = 0 ;
-        int index = 0 ;
+        int id = 0 ;
         for (int i = 0 ; i < components.size() ; i++) {
             if (components.get(i).size() > max) {
                 max = components.get(i).size() ;
-                index = i ;
+                id = i ;
             }
         }
-        return index ;
+
+        return id ;
     }
 }

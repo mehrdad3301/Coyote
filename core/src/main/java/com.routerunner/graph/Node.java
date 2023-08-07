@@ -18,6 +18,14 @@ public class Node {
         this.lon = lon;
     }
 
+    public float getLat() {
+        return lat;
+    }
+
+    public float getLon() {
+        return lon;
+    }
+
     public Point toPoint() {
         return new Point(lat, lon) ;
     }

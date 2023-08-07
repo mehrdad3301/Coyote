@@ -27,6 +27,10 @@ public class Path {
         return cost ;
     }
 
+    public LinkedList<Intersection> getPath() {
+        return path;
+    }
+
     public String toString() {
         StringBuilder s = new StringBuilder("Path ");
         for (Intersection intersection: path) {
@@ -42,8 +46,8 @@ public class Path {
      * from this node to the next on the path
      */
     public static class Intersection {
-        Node node ;
-        int weight ;
+        public Node node ;
+        public int weight ;
 
         public Intersection(Node node, int weight) {
             this.node = node;

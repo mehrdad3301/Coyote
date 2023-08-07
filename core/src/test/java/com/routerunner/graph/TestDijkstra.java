@@ -11,16 +11,16 @@ public class TestDijkstra {
 
         Graph graph = Graph.buildFromOSM("./src/test/resources/graph_test_1.osm");
         Dijkstra dij = new Dijkstra(graph);
-        assertEquals(dij.getShortestPath(1, 3), 12);
-        assertEquals(dij.getShortestPath(4, 3), 13);
-        assertEquals(dij.getShortestPath(4, 2), 17);
+        assertEquals(dij.computeShortestPath(1, 3), 730);
+        assertEquals(dij.computeShortestPath(4, 3), 828);
+        assertEquals(dij.computeShortestPath(4, 2), 1049 );
 
         graph = Graph.buildFromOSM("./src/test/resources/graph_test_2.osm");
         dij = new Dijkstra(graph);
-        assertEquals(dij.getShortestPath(4, 2), 10);
-        assertEquals(dij.getShortestPath(4, 3), 13);
-        assertEquals(dij.getShortestPath(0, 6), 26);
-        assertEquals(dij.getShortestPath(2, 3), 6);
+        assertEquals(dij.computeShortestPath(4, 2), 616);
+        assertEquals(dij.computeShortestPath(4, 3), 852);
+        assertEquals(dij.computeShortestPath(0, 6), 1637);
+        assertEquals(dij.computeShortestPath(2, 3), 360);
     }
 
     @Test
@@ -33,18 +33,18 @@ public class TestDijkstra {
                 numNodes=4,
                 adjecency matrix= {
                 	0= {
-                		2:8
+                		2:485
                                 
                 	1= {
-                		2:5
-                		3:10
+                		2:324
+                		3:616
                                 
                 	2= {
-                		0:8
-                		1:5
+                		0:485
+                		1:324
                                 
                 	3= {
-                		1:10
+                		1:616
                                 
                 }""");
 
@@ -56,23 +56,23 @@ public class TestDijkstra {
                 numNodes=5,
                 adjecency matrix= {
                 	0= {
-                		2:8
-                        
+                		2:485
+                                
                 	1= {
-                		2:5
-                		3:10
-                		4:13
-                        
+                		2:324
+                		3:616
+                		4:823
+                                
                 	2= {
-                		0:8
-                		1:5
-                        
+                		0:485
+                		1:324
+                                
                 	3= {
-                		1:10
-                        
+                		1:616
+                                
                 	4= {
-                		1:13
-                        
+                		1:823
+                                
                 }""") ;
 
         graph = Graph.buildFromOSM("./src/test/resources/lcc_test_3.osm");
@@ -83,20 +83,20 @@ public class TestDijkstra {
                 numNodes=4,
                 adjecency matrix= {
                 	0= {
-                		1:5
-                		2:10
-                		3:13
-                        
+                		1:324
+                		2:616
+                		3:823
+                                
                 	1= {
-                		0:5
-                        
+                		0:324
+                                
                 	2= {
-                		0:10
-                        
+                		0:616
+                                
                 	3= {
-                		0:13
-                        
-                }""") ;
+                		0:823
+                                
+                t}""") ;
     }
 }
 

@@ -2,6 +2,10 @@ target/*
 out/*
 .idea/*
 RouteRunner.iml
+*.osm
+*.osm.bz2
+*/target/*
+
 
 
 # CMake

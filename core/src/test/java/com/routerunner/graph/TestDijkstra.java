@@ -4,10 +4,11 @@ import com.routerunner.algorithms.Dijkstra;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 public class TestDijkstra {
     @Test
-    public void DijkstraSimple() throws Exception {
+    public void Dijkstra() throws Exception {
 
         Graph graph = Graph.buildFromOSM("./src/test/resources/graph_test_1.osm");
         Dijkstra dij = new Dijkstra(graph);
@@ -17,13 +18,30 @@ public class TestDijkstra {
 
         graph = Graph.buildFromOSM("./src/test/resources/graph_test_2.osm");
         dij = new Dijkstra(graph);
+
         assertEquals(dij.computeShortestPath(4, 2).getCost(), 616);
-        Path path = dij.computeShortestPath(4, 3) ;
-        assertEquals(path.toString(), "Path 104 - 324 > 101 - 528 > 103 - 0 > ");
         assertEquals(dij.computeShortestPath(2, 3).getCost(), 360);
+
+        Path path = dij.computeShortestPath(4, 3) ;
+        assertEquals(path.toString(), "Path 104 - 324 > 101 - 528 > 103 ");
+        assertEquals(dij.getNumVisitedNodes(), 5);
+
         path = dij.computeShortestPath(0, 6) ;
-        assertEquals(path.toString(), "Path 100 - 485 > 104 - 616 > 102 - 536 > 106 - 0 > ");
+        assertEquals(path.toString(), "Path 100 - 485 > 104 - 616 > 102 - 536 > 106 ");
         assertEquals(path.getCost(), 1637);
+        assertEquals(dij.getNumVisitedNodes(), 7);
+
+        graph = Graph.buildFromOSM("./src/test/resources/graph_test_3.osm");
+        dij = new Dijkstra(graph);
+        path = dij.computeShortestPath(0, 7) ;
+        assertEquals(path.toString(), "Path 101 - 61211 > 113 - 19731 > 112 - 9765 > 111 - 15043 > 109 - 31120 > 108 ");
+        assertEquals(dij.getNumVisitedNodes(), 13);
+        assertEquals(path.getCost(),136870);
+
+        path = dij.computeShortestPath(3, 10) ;
+        assertEquals(path.toString(), "Path 104 - 16118 > 102 - 14509 > 101 - 61211 > 113 - 19731 > 112 - 9765 > 111 ") ;
+        assertEquals(path.getCost(), 121334);
+        assertEquals(dij.getNumVisitedNodes(), 10);
     }
 
     @Test

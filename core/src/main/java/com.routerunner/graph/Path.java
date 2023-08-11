@@ -37,7 +37,7 @@ public class Path {
             s.append(intersection.node.osmId).append(" - ").
                     append(intersection.weight).append(" > ") ;
         }
-        return s.toString() ;
+        return s.subSequence(0, s.length() - 6).toString() ;
     }
 
     /**

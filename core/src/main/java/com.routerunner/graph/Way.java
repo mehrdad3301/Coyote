@@ -1,5 +1,7 @@
 package com.routerunner.graph;
 
+import com.routerunner.geo.Point;
+
 import java.util.ArrayList;
 
 import static com.routerunner.geo.GeoMath.getHaversineDistance;
@@ -26,7 +28,11 @@ public class Way {
      * this will be used as weight in our graph.
      */
     public int getCost(Node start, Node end) {
-        double distance = getHaversineDistance(start.toPoint(), end.toPoint()) ;
+        return getCost(start.toPoint(), end.toPoint(), type) ;
+    }
+
+    public static int getCost(Point p1, Point p2, HighWay type) {
+        double distance = getHaversineDistance(p1, p2) ;
         return (int) (distance / (1.00 * type.getSpeedLimit()) * 60 * 60) ;
     }
 

@@ -9,13 +9,16 @@ import com.routerunner.graph.Path;
 import java.net.Inet4Address;
 import java.util.*;
 
+import static com.routerunner.geo.GeoMath.getHaversineDistance;
+
 /**
- * Dijkstra implements dijkstra algorithm
+ * this class implements dijkstra algorithm. It also serves as
+ * a base class for AStar. It might have been better to define
+ * an abstract class from which both AStar and Dijkstra inherit
  */
 public class Dijkstra {
 
-    final Graph graph ;
-
+    public final Graph graph ;
     // Indicator which node was visited by a particular run of Dijkstra. Useful
     // for computing the connected components
     final ArrayList<Integer> visited ;
@@ -23,7 +26,8 @@ public class Dijkstra {
     final ArrayList<Integer> parents ;
     // distance from source to all settled nodes in dijkstra
     final ArrayList<Integer> distances ;
-    // ids of nodes visited by a run of algorithm
+    // heuristics used in cost function, see AStar
+    ArrayList<Integer> heuristic ;
     int mark ;
 
     public Dijkstra(Graph graph) {
@@ -31,6 +35,7 @@ public class Dijkstra {
         visited = new ArrayList<>(Collections.nCopies(graph.getNumNodes(), 0)) ;
         parents = new ArrayList<>(Collections.nCopies(graph.getNumNodes(), -1)) ;
         distances = new ArrayList<>(Collections.nCopies(graph.getNumNodes(), Integer.MAX_VALUE)) ;
+        heuristic = new ArrayList<>(Collections.nCopies(graph.getNumNodes(), 0)) ;
         mark = 1 ;
     }
 
@@ -45,8 +50,8 @@ public class Dijkstra {
 
     /**
      * computes the shortest path between a source and a destination
-     * this function doesn't clear lists. to find out how this can be
-     * useful, see LLC
+     * this function doesn't clear lists which can be useful when we
+     * want to run dijkstra multiple times. see LLC for a use case
      */
     protected Path getShortestPath(int sourceNodeId, int targetNodeId) {
         distances.set(sourceNodeId, 0) ;
@@ -60,24 +65,26 @@ public class Dijkstra {
             }
             for (Arc arc : graph.getAdjacent(e.id)) {
                 int dst = arc.getHeadNodeId() ;
+                int cost = e.distance + arc.getCost() + heuristic.get(dst) ;
                 if (visited.get(dst) != 0)
                     continue ;
-                if (distances.get(dst) < e.distance + arc.getCost())
+                if (distances.get(dst) < cost)
                     continue ;
                 parents.set(dst, e.id) ;
-                distances.set(dst, e.distance + arc.getCost()) ;
-                pq.add(new Pair(arc.getHeadNodeId(), e.distance + arc.getCost()));
+                distances.set(dst, cost) ;
+                pq.add(new Pair(dst, cost));
             }
             visited.set(e.id, mark) ;
         }
 
-        if (targetNodeId != -1)
-            return getPath(targetNodeId) ;
-        return null ;
+       if (targetNodeId != -1)
+           return getPath(targetNodeId) ;
+       return null ;
     }
 
     /**
-     * constructs the Path from one run of dijkstra
+     * constructs the Path from one run of dijkstra. It extracts
+     * the path from arrays filled by the algorithm
      */
     private Path getPath(int targetNodeId) {
         ArrayList<Integer> nodeIds = new ArrayList<>() ;
@@ -104,17 +111,35 @@ public class Dijkstra {
 
     private void clearLists() {
         mark = 1 ;
-        visited.replaceAll(ignored -> 0);
-        distances.replaceAll(ignored -> Integer.MAX_VALUE);
-        parents.replaceAll(ignored -> -1);
+        Collections.fill(visited, 0);
+        Collections.fill(distances, Integer.MAX_VALUE);
+        Collections.fill(parents, -1);
+    }
+    public void setHeuristic(ArrayList<Integer> heuristic) {
+        this.heuristic = heuristic;
     }
 
+    /**
+     * @return a list of ids that shows every node settled during
+     * dijkstra, that means nodes for which we know the cost of shortest path
+     * after running dijkstra
+     */
+    public ArrayList<Integer> getSettledIds() {
+        ArrayList<Integer> ids = new ArrayList<>() ;
+        for (int i = 0 ; i < visited.size() ; i++) {
+            if (visited.get(i) != 0) {
+                ids.add(i);
+            }
+        }
+        return ids;
+    }
     public int getNumVisitedNodes() {
         return visited.size() - Collections.frequency(visited, 0) ;
     }
 
     /**
-     * Pair represents an element in the priority queue
+     * Pair represents an element in the priority queue. distance shows
+     * cost for reaching that node from source in dijkstra algorithm
      */
     static class Pair {
         int id ;

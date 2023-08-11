@@ -1,12 +1,13 @@
 package com.routerunner.graph;
 
+import com.routerunner.algorithms.AStar;
 import com.routerunner.algorithms.Dijkstra;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
-public class TestDijkstra {
+public class TestAlgorithm {
     @Test
     public void Dijkstra() throws Exception {
 
@@ -42,6 +43,22 @@ public class TestDijkstra {
         assertEquals(path.toString(), "Path 104 - 16118 > 102 - 14509 > 101 - 61211 > 113 - 19731 > 112 - 9765 > 111 ") ;
         assertEquals(path.getCost(), 121334);
         assertEquals(dij.getNumVisitedNodes(), 10);
+    }
+
+    @Test
+    public void AStar() throws Exception {
+
+        Graph graph = Graph.buildFromOSM("./src/test/resources/graph_test_3.osm");
+        Dijkstra dij = new AStar(graph);
+        Path path = dij.computeShortestPath(0, 11) ;
+        assertEquals(dij.getNumVisitedNodes(),8);
+        assertEquals(path.toString(), "Path 101 - 61211 > 113 - 19731 > 112 ") ;
+        assertEquals(path.getCost(),80942);
+
+        path = dij.computeShortestPath(6, 11) ;
+        assertEquals(path.toString(), "Path 107 - 60190 > 108 - 31120 > 109 - 15043 > 111 - 9765 > 112 ") ;
+        assertEquals(dij.getNumVisitedNodes(),8);
+        assertEquals(path.getCost(), 116118);
     }
 
     @Test

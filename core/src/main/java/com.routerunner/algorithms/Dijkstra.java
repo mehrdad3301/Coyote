@@ -6,10 +6,7 @@ import com.routerunner.graph.Graph;
 import com.routerunner.graph.Node;
 import com.routerunner.graph.Path;
 
-import java.net.Inet4Address;
 import java.util.*;
-
-import static com.routerunner.geo.GeoMath.getHaversineDistance;
 
 /**
  * this class implements dijkstra algorithm. It also serves as
@@ -40,7 +37,7 @@ public class Dijkstra {
     }
 
     public Path computeShortestPath(Point p1, Point p2) {
-        return computeShortestPath(graph.getNode(p1), graph.getNode(p2)) ;
+        return computeShortestPath(graph.getClosestNode(p1), graph.getClosestNode(p2)) ;
     }
 
     public Path computeShortestPath(int sourceNodeId, int targetNodeId) {
@@ -59,20 +56,23 @@ public class Dijkstra {
         pq.add(new Pair(sourceNodeId, 0)) ;
         while (!pq.isEmpty()) {
             Pair e = pq.poll() ;
+            if (visited.get(e.id) != 0) {
+                continue ;
+            }
             if (e.id == targetNodeId) {
                 visited.set(e.id, mark) ;
                 break ;
             }
             for (Arc arc : graph.getAdjacent(e.id)) {
                 int dst = arc.getHeadNodeId() ;
-                int cost = e.distance + arc.getCost() + heuristic.get(dst) ;
+                int cost = distances.get(e.id) + arc.getCost() ;
                 if (visited.get(dst) != 0)
                     continue ;
                 if (distances.get(dst) < cost)
                     continue ;
                 parents.set(dst, e.id) ;
                 distances.set(dst, cost) ;
-                pq.add(new Pair(dst, cost));
+                pq.add(new Pair(dst, cost + heuristic.get(dst)));
             }
             visited.set(e.id, mark) ;
         }

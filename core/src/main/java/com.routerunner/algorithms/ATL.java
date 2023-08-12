@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import static com.routerunner.util.Random.generateRandom;
 import static java.lang.Math.abs;
 
-public class Landmarks extends Dijkstra {
+public class ALT extends Dijkstra {
 
     // The set of landmarks. Each entry in the array is a node id
     private ArrayList<Integer> landmarks ;
@@ -24,12 +24,12 @@ public class Landmarks extends Dijkstra {
      */
     private ArrayList<ArrayList<Integer>> landmarkDistances;
 
-    public Landmarks(Graph graph) {
+    public ALT(Graph graph) {
         super(graph);
         int defaultNumLandmarks = 42;
         setLandmarks(defaultNumLandmarks); ;
     }
-    public Landmarks(Graph graph, int numLandmarks) {
+    public ALT(Graph graph, int numLandmarks) {
         super(graph) ;
         setLandmarks(numLandmarks);
         precomputeLandmarkDistance();
@@ -45,7 +45,7 @@ public class Landmarks extends Dijkstra {
      * @param num specifies number of landmarks
      */
     void setLandmarks(int num) {
-        landmarks = generateRandom(num, 0, graph.getNumNodes()) ;
+        landmarks = generateRandom(num, 0, graph.getNumNodes() - 1) ;
     }
 
     /**
@@ -90,6 +90,14 @@ public class Landmarks extends Dijkstra {
             heuristics.add(max) ;
         }
         return heuristics ;
+    }
+
+    /**
+     * this function is used to set landmarks manually. It is mainly used in tests
+     */
+    public void setLandmarks(ArrayList<Integer> landmarks) {
+        this.landmarks = landmarks ;
+        precomputeLandmarkDistance();
     }
 }
 

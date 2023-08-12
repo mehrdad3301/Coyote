@@ -12,7 +12,7 @@ import java.util.Objects;
 
 
 /**
- * Sample Server class.
+ * Sample Server Socket used as a demo for visualizing various algorithms implemented
  * */
 public class MapServer {
 
@@ -56,13 +56,11 @@ public class MapServer {
   }
   private String getSettledPoints() {
     StringBuilder points = new StringBuilder("[");
-    for (int i = 0; i < dijkstra.getNumVisitedNodes(); i++) {
-      if (dijkstra.getVisited().get(i) != 0) {
+    for (int i : dijkstra.getSettledIds()) {
         // Send JSONP results string back to client.
         points.append("[ ").append(dijkstra.graph.getNode(i).getLat())
                 .append(",").append(dijkstra.graph.getNode(i).getLon())
                 .append("]").append(",");
-      }
     }
     //deleting the last comma
     points.deleteCharAt(points.length() - 1);

@@ -5,6 +5,7 @@ RouteRunner.iml
 *.osm
 *.osm.bz2
 */target/*
+*.iml
 
 
 

@@ -2,14 +2,10 @@ package com.routerunner;
 
 import com.routerunner.algorithms.Dijkstra;
 import com.routerunner.graph.Graph;
-import org.openjdk.jmh.annotations.Mode;
-import org.openjdk.jmh.runner.Runner;
-import org.openjdk.jmh.runner.RunnerException;
-import org.openjdk.jmh.runner.options.Options;
-import org.openjdk.jmh.runner.options.OptionsBuilder;
 
-import java.util.Collections;
 import java.util.concurrent.ThreadLocalRandom;
+
+import static com.routerunner.util.Random.getPositiveRandom;
 
 public class BenchAlgorithms {
 
@@ -42,8 +38,8 @@ public class BenchAlgorithms {
             int sumSettledNodes = 0 ;
             for(int i = 0 ; i < iterations ; i++) {
                 int max = graph.getNumNodes() ;
-                int source = ThreadLocalRandom.current().nextInt(0, max);
-                int target = ThreadLocalRandom.current().nextInt(0, max);
+                int source = getPositiveRandom(max) ;
+                int target = getPositiveRandom(max) ;
                 int cost = dij.computeShortestPath(source, target).getCost() ;
                 sumCost += cost ;
                 sumSettledNodes += dij.getNumVisitedNodes();

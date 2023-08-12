@@ -1,12 +1,11 @@
 package com.routerunner.algorithms;
 
 import com.routerunner.geo.Point;
-import com.routerunner.graph.Arc;
-import com.routerunner.graph.Graph;
-import com.routerunner.graph.Node;
-import com.routerunner.graph.Path;
+import com.routerunner.graph.*;
 
 import java.util.*;
+
+import static com.routerunner.graph.Way.getCost;
 
 /**
  * this class implements dijkstra algorithm. It also serves as

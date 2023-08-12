@@ -12,6 +12,8 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
+import static com.routerunner.util.Random.getPositiveRandom;
+
 public class BenchDijkstra {
 
     @State(Scope.Benchmark)
@@ -38,8 +40,8 @@ public class BenchDijkstra {
     @Benchmark
     public void Dijkstra(GraphState state) {
         int max = state.graph.getNumNodes() ;
-        int source = ThreadLocalRandom.current().nextInt(0, max);
-        int target = ThreadLocalRandom.current().nextInt(0, max);
+        int source = getPositiveRandom(max) ;
+        int target = getPositiveRandom(max) ;
         new Dijkstra(state.graph).computeShortestPath(source, target) ;
     }
 

@@ -8,7 +8,6 @@ import java.util.Collections;
  * that might be used in other places of the code.
  */
 public class Array {
-
     public static ArrayList<Integer> cumSum(ArrayList<Integer> elements) {
         ArrayList<Integer> sum = new ArrayList<>(elements.size()) ;
         int total = 0 ;

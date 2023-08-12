@@ -1,5 +1,8 @@
 package com.routerunner.geo;
 
+/**
+ * TODO deprecate this class and use Node instead
+ */
 public class Point {
 
     float lat;

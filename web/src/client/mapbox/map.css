@@ -1,0 +1,27 @@
+body { margin:0; padding:0; }
+#map { position:absolute; top:0; bottom:0; width:100%; } 
+#debugButtonContainer {
+position: absolute;
+bottom: 10px;
+left: 10px;
+background-color: #33FF74;
+padding: 5px;
+border-radius: 5px;
+}
+#debugButton {
+font-family: sans-serif;
+padding: 5px 10px;
+background-color: #33FF74 ; 
+border-radius: 5px;
+cursor: pointer; }
+pre.ui-distance {
+  position:absolute;
+  bottom:10px;
+  left:10px;
+  padding:5px 10px;
+  background:rgba(0,0,0,0.5);
+  color:#fff;
+  font-size:11px;
+  line-height:18px;
+  border-radius:3px;
+  }

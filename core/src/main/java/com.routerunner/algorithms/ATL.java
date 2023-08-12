@@ -8,7 +8,11 @@ import java.util.ArrayList;
 import static com.routerunner.util.Random.generateRandom;
 import static java.lang.Math.abs;
 
-public class ALT extends Dijkstra {
+/**
+ * ATL implements A*, Triangle inequality and Landmarks algorithm
+ * to compute the shortest path
+ */
+public class ATL extends Dijkstra {
 
     // The set of landmarks. Each entry in the array is a node id
     private ArrayList<Integer> landmarks ;
@@ -24,12 +28,13 @@ public class ALT extends Dijkstra {
      */
     private ArrayList<ArrayList<Integer>> landmarkDistances;
 
-    public ALT(Graph graph) {
+    public ATL(Graph graph) {
         super(graph);
         int defaultNumLandmarks = 42;
         setLandmarks(defaultNumLandmarks); ;
+        precomputeLandmarkDistance();
     }
-    public ALT(Graph graph, int numLandmarks) {
+    public ATL(Graph graph, int numLandmarks) {
         super(graph) ;
         setLandmarks(numLandmarks);
         precomputeLandmarkDistance();
@@ -56,8 +61,8 @@ public class ALT extends Dijkstra {
     void precomputeLandmarkDistance() {
         landmarkDistances = new ArrayList<>(landmarks.size()) ;
         for (int nodeId : landmarks) {
-            computeShortestPath(nodeId, -1);
-            landmarkDistances.add(distances);
+            super.computeShortestPath(nodeId, -1);
+            landmarkDistances.add(new ArrayList<>(distances));
         }
     }
 

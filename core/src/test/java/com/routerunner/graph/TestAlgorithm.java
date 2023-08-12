@@ -1,15 +1,18 @@
 package com.routerunner.graph;
 
 import com.routerunner.algorithms.AStar;
+import com.routerunner.algorithms.ATL;
 import com.routerunner.algorithms.Dijkstra;
 import org.junit.Test;
+
+import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
 public class TestAlgorithm {
     @Test
-    public void Dijkstra() throws Exception {
+    public void TestDijkstra() throws Exception {
 
         Graph graph = Graph.buildFromOSM("./src/test/resources/graph_test_1.osm");
         Dijkstra dij = new Dijkstra(graph);
@@ -46,7 +49,7 @@ public class TestAlgorithm {
     }
 
     @Test
-    public void AStar() throws Exception {
+    public void TestAStar() throws Exception {
 
         Graph graph = Graph.buildFromOSM("./src/test/resources/graph_test_3.osm");
         Dijkstra dij = new AStar(graph);
@@ -60,9 +63,27 @@ public class TestAlgorithm {
         assertEquals(dij.getNumVisitedNodes(),8);
         assertEquals(path.getCost(), 116118);
     }
+    @Test
+    public void TestATL() throws Exception {
+
+        Graph graph = Graph.buildFromOSM("./src/test/resources/graph_test_3.osm");
+        ATL atl = new ATL(graph, 1);
+        ArrayList<Integer> landmarks = new ArrayList<>() ;
+        landmarks.add(2) ;
+        landmarks.add(7) ;
+        landmarks.add(12) ;
+        atl.setLandmarks(landmarks) ;
+        Path path = atl.computeShortestPath(4, 11) ;
+        assertEquals(path.toString(), "Path 105 - 10834 > 103 - 14815 > 101 - 61211 > 113 - 19731 > 112 ") ;
+        assertEquals(path.getCost(), 106591);
+
+        // case where source is a landmark
+        path = atl.computeShortestPath(2, 8) ;
+        assertEquals(path.toString(), "Path 103 - 14815 > 101 - 61211 > 113 - 19731 > 112 - 9765 > 111 - 15043 > 109 ") ;
+    }
 
     @Test
-    public void LargestConnectedComponent() throws Exception {
+    public void TestLargestConnectedComponent() throws Exception {
         Graph graph = Graph.buildFromOSM("./src/test/resources/lcc_test_1.osm");
         graph.reduceToLargestConnectedComponent();
         assertEquals(graph.toString(), """

@@ -1,3 +1,5 @@
+import com.routerunner.algorithms.AStar;
+import com.routerunner.algorithms.ATL;
 import com.routerunner.algorithms.Dijkstra;
 import com.routerunner.geo.Point;
 import com.routerunner.graph.Graph;
@@ -28,7 +30,7 @@ public class MapServer {
     Graph graph = Graph.buildFromOSM(address);
     System.out.println("REDUCING THE GRAPH TO LARGEST CONNECTED COMPONENTS\u001b[0m\n");
     graph.reduceToLargestConnectedComponent();
-    dijkstra = new Dijkstra(graph);
+    dijkstra = new ATL(graph);
   }
   private String getHeaders(JSONObject json) {
       // Prepare the headers
@@ -69,7 +71,8 @@ public class MapServer {
   }
 
   private String getPath(Point[] points) {
-    Path path = dijkstra.computeShortestPath(points[0], points[1]);
+    dijkstra.computeShortestPath(points[0], points[1]);
+    Path path = dijkstra.getPath(points[1]) ;
     StringBuilder pathString = new StringBuilder("[");
     for (Path.Intersection intersection: path.getPath()) {
       // Send JSONP results string back to client.

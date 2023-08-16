@@ -20,7 +20,7 @@ public class AStar extends Dijkstra {
      * computeShortestPath first sets heuristics and then calls super
      * method in Dijkstra
      */
-    public Path computeShortestPath(int sourceNodeId, int targetNodeId) {
+    public int computeShortestPath(int sourceNodeId, int targetNodeId) {
         setHeuristic(getHaversineHeuristic(targetNodeId));
         return super.computeShortestPath(sourceNodeId, targetNodeId);
     }

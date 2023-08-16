@@ -18,13 +18,21 @@ public class Dijkstra {
     // Indicator which node was visited by a particular run of Dijkstra. Useful
     // for computing the connected components
     final ArrayList<Integer> visited ;
+    // The ids of the nodes visited by the last call of
+    // the computeShortestPath method above.
+    ArrayList<Integer> visitedNodeIds ;
     // parent pointers computed by last call to dijkstra
     final ArrayList<Integer> parents ;
     // distance from source to all settled nodes in dijkstra
     final ArrayList<Integer> distances ;
     // heuristics used in cost function, see AStar
     ArrayList<Integer> heuristic ;
-    int mark ;
+    // stop dijkstra after this number of nodes are settled
+    // Default is MAX_INT
+    int maxSettledNodes ;
+    // stop dijkstra when a node with greater cost than this is settled
+    // Default is MAX_INT
+    int costUpperBound ;
 
     public Dijkstra(Graph graph) {
         this.graph = graph;
@@ -32,14 +40,16 @@ public class Dijkstra {
         parents = new ArrayList<>(Collections.nCopies(graph.getNumNodes(), -1)) ;
         distances = new ArrayList<>(Collections.nCopies(graph.getNumNodes(), Integer.MAX_VALUE)) ;
         heuristic = new ArrayList<>(Collections.nCopies(graph.getNumNodes(), 0)) ;
-        mark = 1 ;
+        visitedNodeIds = new ArrayList<>() ;
+        costUpperBound = Integer.MAX_VALUE ;
+        maxSettledNodes = Integer.MAX_VALUE ;
     }
 
-    public Path computeShortestPath(Point p1, Point p2) {
+    public int computeShortestPath(Point p1, Point p2) {
         return computeShortestPath(graph.getClosestNode(p1), graph.getClosestNode(p2)) ;
     }
 
-    public Path computeShortestPath(int sourceNodeId, int targetNodeId) {
+    public int computeShortestPath(int sourceNodeId, int targetNodeId) {
         clearLists();
         return getShortestPath(sourceNodeId, targetNodeId) ;
     }
@@ -49,45 +59,59 @@ public class Dijkstra {
      * this function doesn't clear lists which can be useful when we
      * want to run dijkstra multiple times. see LLC for a use case
      */
-    protected Path getShortestPath(int sourceNodeId, int targetNodeId) {
+    protected int getShortestPath(int sourceNodeId, int targetNodeId) {
+        visitedNodeIds = new ArrayList<>() ;
         distances.set(sourceNodeId, 0) ;
         PriorityQueue<Pair> pq = new PriorityQueue<>(Comparator.comparingInt(p -> p.distance)) ;
         pq.add(new Pair(sourceNodeId, 0)) ;
         while (!pq.isEmpty()) {
             Pair e = pq.poll() ;
-            if (visited.get(e.id) != 0) {
+            if (visited.get(e.id) != 0)
                 continue ;
-            }
+            // return when reached the target
             if (e.id == targetNodeId) {
-                visited.set(e.id, mark) ;
+                visited.set(e.id, 1) ;
+                visitedNodeIds.add(e.id) ;
                 break ;
             }
+            // if cost upper bound has been reached
+            if (distances.get(e.id) > costUpperBound)
+                break ;
+            // if the number of settled nodes has reached the maximum
+            if (getNumVisitedNodes() > maxSettledNodes)
+                break ;
+            // adding adjacent nodes
             for (Arc arc : graph.getAdjacent(e.id)) {
+                // check to see if we are allowed to check this arc
                 if (!arc.getArcFlag())
                     continue ;
                 int dst = arc.getHeadNodeId() ;
                 int cost = distances.get(e.id) + arc.getCost() ;
+                // ignore the node if already settled
                 if (visited.get(dst) != 0)
                     continue ;
+                // ignore the node if there is already a better path
                 if (distances.get(dst) < cost)
                     continue ;
                 parents.set(dst, e.id) ;
+                // relax the cost
                 distances.set(dst, cost) ;
                 pq.add(new Pair(dst, cost + heuristic.get(dst)));
             }
-            visited.set(e.id, mark) ;
+            visited.set(e.id, 1) ;
+            visitedNodeIds.add(e.id) ;
         }
 
-       if (targetNodeId != -1)
-           return getPath(targetNodeId) ;
-       return null ;
+        if (targetNodeId != -1)
+            return distances.get(targetNodeId) ;
+        return -1;
     }
 
     /**
      * constructs the Path from one run of dijkstra. It extracts
      * the path from arrays filled by the algorithm
      */
-    private Path getPath(int targetNodeId) {
+    public Path getPath(int targetNodeId) {
         ArrayList<Integer> nodeIds = new ArrayList<>() ;
         nodeIds.add(targetNodeId) ;
         int parent = parents.get(targetNodeId) ;
@@ -110,8 +134,11 @@ public class Dijkstra {
         return path ;
     }
 
+    public Path getPath(Point point) {
+        return getPath(graph.getClosestNode(point)) ;
+    }
+
     private void clearLists() {
-        mark = 1 ;
         Collections.fill(visited, 0);
         Collections.fill(distances, Integer.MAX_VALUE);
         Collections.fill(parents, -1);
@@ -126,16 +153,18 @@ public class Dijkstra {
      * after running dijkstra
      */
     public ArrayList<Integer> getSettledIds() {
-        ArrayList<Integer> ids = new ArrayList<>() ;
-        for (int i = 0 ; i < visited.size() ; i++) {
-            if (visited.get(i) != 0) {
-                ids.add(i);
-            }
-        }
-        return ids;
+        return visitedNodeIds ;
     }
     public int getNumVisitedNodes() {
-        return visited.size() - Collections.frequency(visited, 0) ;
+        return visitedNodeIds.size() ;
+    }
+
+    public void setMaxSettledNodes(int maxSettledNodes) {
+        this.maxSettledNodes = maxSettledNodes;
+    }
+
+    public void setCostUpperBound(int costUpperBound) {
+        this.costUpperBound = costUpperBound;
     }
 
     /**

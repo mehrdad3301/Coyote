@@ -14,10 +14,11 @@ public class LCC {
     private final Dijkstra dijkstra ;
     private final Graph graph ;
 
-    private ArrayList<ArrayList<Integer>> components ;
+    private final ArrayList<ArrayList<Integer>> components ;
     public LCC(Graph graph) {
-        this.dijkstra = new Dijkstra(graph) ;
         this.graph = graph ;
+        this.dijkstra = new Dijkstra(graph) ;
+        this.components = new ArrayList<>() ;
     }
 
     /**
@@ -35,18 +36,16 @@ public class LCC {
      *
      */
     private void getAllComponents() {
+        ArrayList<Integer> seen = new ArrayList<>(Collections.nCopies(graph.getNumNodes(), 0)) ;
         for (int i = 0; i < graph.getNumNodes(); i++) {
-                if (dijkstra.visited.get(i) != 0)
+                if (seen.get(i) != 0)
                     continue ;
                 dijkstra.getShortestPath(i, -1);
-                dijkstra.mark ++ ;
-        }
-        components = new ArrayList<>(dijkstra.mark) ;
-        for (int i = 0 ; i < dijkstra.mark ; i++) {
-            components.add(new ArrayList<>());
-        }
-        for (int i = 0 ; i < dijkstra.visited.size() ; i++ ) {
-            components.get(dijkstra.visited.get(i) - 1).add(i) ;
+                for (int ids: dijkstra.getSettledIds()) {
+                    seen.set(ids, 1);
+                }
+            components.add(dijkstra.getSettledIds()) ;
+            dijkstra.visitedNodeIds = new ArrayList<>() ;
         }
     }
 
@@ -54,7 +53,7 @@ public class LCC {
      * reduces the graph to the component pointed by index
      */
     private void reduceToComponent(int index) {
-        graph.removeNodes(components.get(index)) ;
+        graph.reduceNodes(components.get(index)) ;
     }
 
     /**

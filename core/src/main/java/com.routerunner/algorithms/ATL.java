@@ -72,7 +72,7 @@ public class ATL extends Dijkstra {
     * NOTE: this algorithm only works in point-to-point mode, so the option
     * targetNodeId == -1 does not make sense here.
     */
-    public Path computeShortestPath(int sourceNodeId, int targetNodeId) {
+    public int computeShortestPath(int sourceNodeId, int targetNodeId) {
         setHeuristic(calcHueristics(targetNodeId));
         return super.computeShortestPath(sourceNodeId, targetNodeId) ;
     }

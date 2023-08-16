@@ -63,6 +63,8 @@ public class Dijkstra {
                 break ;
             }
             for (Arc arc : graph.getAdjacent(e.id)) {
+                if (!arc.getArcFlag())
+                    continue ;
                 int dst = arc.getHeadNodeId() ;
                 int cost = distances.get(e.id) + arc.getCost() ;
                 if (visited.get(dst) != 0)

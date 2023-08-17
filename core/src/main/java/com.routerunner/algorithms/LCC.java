@@ -40,7 +40,7 @@ public class LCC {
         for (int i = 0; i < graph.getNumNodes(); i++) {
                 if (seen.get(i) != 0)
                     continue ;
-                dijkstra.getShortestPath(i, -1);
+                dijkstra.computeShortestPath(i, -1);
                 for (int ids: dijkstra.getSettledIds()) {
                     seen.set(ids, 1);
                 }

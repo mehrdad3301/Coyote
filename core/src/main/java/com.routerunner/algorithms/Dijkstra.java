@@ -13,9 +13,9 @@ import java.util.*;
 public class Dijkstra {
 
     public final Graph graph ;
-    // Indicator which node was visited by a particular run of Dijkstra. Useful
+    // Indicator which node was settled by a particular run of Dijkstra. Useful
     // for computing the connected components
-    final ArrayList<Integer> visited ;
+    final ArrayList<Integer> settled;
     // The ids of the nodes visited by the last call of
     // the computeShortestPath method above.
     ArrayList<Integer> visitedNodeIds ;
@@ -31,19 +31,23 @@ public class Dijkstra {
     // stop dijkstra when a node with greater cost than this is settled
     // Default is MAX_INT
     int costUpperBound ;
-    // whether to consider arc flags in dijkstra
-    boolean useArcFlags ;
+    // whether to use accessNodes
+    boolean filterNodes;
+
+    // whether it's possible for dijkstra to access a node or not
+    ArrayList<Boolean> accessNodes;
 
     public Dijkstra(Graph graph) {
         this.graph = graph;
-        visited = new ArrayList<>(Collections.nCopies(graph.getNumNodes(), 0)) ;
+        settled = new ArrayList<>(Collections.nCopies(graph.getNumNodes(), 0)) ;
         parents = new ArrayList<>(Collections.nCopies(graph.getNumNodes(), -1)) ;
         distances = new ArrayList<>(Collections.nCopies(graph.getNumNodes(), Integer.MAX_VALUE)) ;
         heuristic = new ArrayList<>(Collections.nCopies(graph.getNumNodes(), 0)) ;
+        accessNodes = new ArrayList<>(Collections.nCopies(graph.getNumNodes(), true)) ;
         visitedNodeIds = new ArrayList<>() ;
         costUpperBound = Integer.MAX_VALUE ;
         maxSettledNodes = Integer.MAX_VALUE ;
-        useArcFlags = false ;
+        filterNodes = false ;
     }
 
     public int computeShortestPath(Point p1, Point p2) {
@@ -61,35 +65,36 @@ public class Dijkstra {
      * want to run dijkstra multiple times. see LLC for a use case
      */
     protected int getShortestPath(int sourceNodeId, int targetNodeId) {
-        visitedNodeIds = new ArrayList<>() ;
+        int numSettledNodes = 0 ;
         distances.set(sourceNodeId, 0) ;
+        visitedNodeIds.add(sourceNodeId) ;
         PriorityQueue<Pair> pq = new PriorityQueue<>(Comparator.comparingInt(p -> p.distance)) ;
         pq.add(new Pair(sourceNodeId, 0)) ;
         while (!pq.isEmpty()) {
             Pair e = pq.poll() ;
-            if (visited.get(e.id) != 0)
+            if (settled.get(e.id) != 0)
                 continue ;
+            settled.set(e.id, 1) ;
+            numSettledNodes ++ ;
             // return when reached the target
             if (e.id == targetNodeId) {
-                visited.set(e.id, 1) ;
-                visitedNodeIds.add(e.id) ;
+                visitedNodeIds.add(targetNodeId) ;
                 break ;
             }
             // if cost upper bound has been reached
             if (distances.get(e.id) > costUpperBound)
                 break ;
             // if the number of settled nodes has reached the maximum
-            if (getNumSettledNodes() >= maxSettledNodes)
+            if (numSettledNodes >= maxSettledNodes)
                 break ;
             // adding adjacent nodes
             for (Arc arc : graph.getAdjacent(e.id)) {
-                // check to see if we are allowed to check this arc
-                if (useArcFlags && !arc.getArcFlag())
-                    continue ;
+                if (filterNodes && !accessNodes.get(arc.getHeadNodeId()))
+                   continue ;
                 int dst = arc.getHeadNodeId() ;
                 int cost = distances.get(e.id) + arc.getCost() ;
                 // ignore the node if already settled
-                if (visited.get(dst) != 0)
+                if (settled.get(dst) != 0)
                     continue ;
                 // ignore the node if there is already a better path
                 if (distances.get(dst) < cost)
@@ -97,10 +102,9 @@ public class Dijkstra {
                 parents.set(dst, e.id) ;
                 // relax the cost
                 distances.set(dst, cost) ;
+                visitedNodeIds.add(dst) ;
                 pq.add(new Pair(dst, cost + heuristic.get(dst)));
             }
-            visited.set(e.id, 1) ;
-            visitedNodeIds.add(e.id) ;
         }
 
         if (targetNodeId != -1)
@@ -141,10 +145,11 @@ public class Dijkstra {
 
     private void clearLists() {
         for (int id: visitedNodeIds) {
-            visited.set(id, 0) ;
+            settled.set(id, 0) ;
             distances.set(id, Integer.MAX_VALUE) ;
             parents.set(id, -1) ;
         }
+        visitedNodeIds = new ArrayList<>() ;
     }
     public void setHeuristic(ArrayList<Integer> heuristic) {
         this.heuristic = heuristic;
@@ -159,7 +164,11 @@ public class Dijkstra {
         return visitedNodeIds ;
     }
     public int getNumSettledNodes() {
-        return visitedNodeIds.size() ;
+        int cnt = 0 ;
+        for (int i: settled)
+            if (i == 1)
+                cnt ++ ;
+        return cnt ;
     }
 
     public void setMaxSettledNodes(int maxSettledNodes) {
@@ -170,8 +179,16 @@ public class Dijkstra {
         this.costUpperBound = costUpperBound;
     }
 
-    public void setUseArcFlags(boolean useArcFlags) {
-        this.useArcFlags = useArcFlags;
+    public void filterNodes(boolean filterNodes) {
+        this.filterNodes = filterNodes;
+    }
+
+    public void setAccessNode(int id, boolean access) {
+        this.accessNodes.set(id, access) ;
+    }
+
+    public boolean getNodeAccess(int id) {
+        return  accessNodes.get(id) ;
     }
 
     /**

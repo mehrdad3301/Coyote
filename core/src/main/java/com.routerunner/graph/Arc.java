@@ -9,12 +9,9 @@ public class Arc {
     int headNodeId;
     int cost;
 
-    boolean arcFlag ;
-
     public Arc(int headNodeId, int cost) {
         this.headNodeId = headNodeId;
         this.cost = cost;
-        this.arcFlag = true ;
     }
 
     public int getHeadNodeId() {
@@ -25,11 +22,4 @@ public class Arc {
         return cost;
     }
 
-    public boolean getArcFlag() {
-        return arcFlag;
-    }
-
-    public void setArcFlag(boolean flag) {
-            this.arcFlag = flag ;
-    }
 }

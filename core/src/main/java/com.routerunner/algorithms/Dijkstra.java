@@ -140,9 +140,11 @@ public class Dijkstra {
     }
 
     private void clearLists() {
-        Collections.fill(visited, 0);
-        Collections.fill(distances, Integer.MAX_VALUE);
-        Collections.fill(parents, -1);
+        for (int id: visitedNodeIds) {
+            visited.set(id, 0) ;
+            distances.set(id, Integer.MAX_VALUE) ;
+            parents.set(id, -1) ;
+        }
     }
     public void setHeuristic(ArrayList<Integer> heuristic) {
         this.heuristic = heuristic;

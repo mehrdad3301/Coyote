@@ -45,7 +45,6 @@ public class LCC {
                     seen.set(ids, 1);
                 }
             components.add(dijkstra.getSettledIds()) ;
-            dijkstra.visitedNodeIds = new ArrayList<>() ;
         }
     }
 

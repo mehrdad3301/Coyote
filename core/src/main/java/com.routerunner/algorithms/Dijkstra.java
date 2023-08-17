@@ -5,8 +5,6 @@ import com.routerunner.graph.*;
 
 import java.util.*;
 
-import static com.routerunner.graph.Way.getCost;
-
 /**
  * this class implements dijkstra algorithm. It also serves as
  * a base class for AStar. It might have been better to define
@@ -33,6 +31,8 @@ public class Dijkstra {
     // stop dijkstra when a node with greater cost than this is settled
     // Default is MAX_INT
     int costUpperBound ;
+    // whether to consider arc flags in dijkstra
+    boolean useArcFlags ;
 
     public Dijkstra(Graph graph) {
         this.graph = graph;
@@ -43,6 +43,7 @@ public class Dijkstra {
         visitedNodeIds = new ArrayList<>() ;
         costUpperBound = Integer.MAX_VALUE ;
         maxSettledNodes = Integer.MAX_VALUE ;
+        useArcFlags = false ;
     }
 
     public int computeShortestPath(Point p1, Point p2) {
@@ -78,12 +79,12 @@ public class Dijkstra {
             if (distances.get(e.id) > costUpperBound)
                 break ;
             // if the number of settled nodes has reached the maximum
-            if (getNumVisitedNodes() > maxSettledNodes)
+            if (getNumSettledNodes() >= maxSettledNodes)
                 break ;
             // adding adjacent nodes
             for (Arc arc : graph.getAdjacent(e.id)) {
                 // check to see if we are allowed to check this arc
-                if (!arc.getArcFlag())
+                if (useArcFlags && !arc.getArcFlag())
                     continue ;
                 int dst = arc.getHeadNodeId() ;
                 int cost = distances.get(e.id) + arc.getCost() ;
@@ -155,7 +156,7 @@ public class Dijkstra {
     public ArrayList<Integer> getSettledIds() {
         return visitedNodeIds ;
     }
-    public int getNumVisitedNodes() {
+    public int getNumSettledNodes() {
         return visitedNodeIds.size() ;
     }
 
@@ -165,6 +166,10 @@ public class Dijkstra {
 
     public void setCostUpperBound(int costUpperBound) {
         this.costUpperBound = costUpperBound;
+    }
+
+    public void setUseArcFlags(boolean useArcFlags) {
+        this.useArcFlags = useArcFlags;
     }
 
     /**

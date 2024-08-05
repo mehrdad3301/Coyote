@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset=utf-8 />
+<title>Distance between two markers</title>
+<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+<script src='https://api.mapbox.com/mapbox.js/v3.3.1/mapbox.js'></script>
+<script src="leaflet-heat.js"></script>
+<script type="text/javascript" src="jquery-1.7.2.min.js"></script>
+<link href='https://api.mapbox.com/mapbox.js/v3.3.1/mapbox.css' rel='stylesheet' />
+<link rel="stylesheet" type="text/css" href="map.css">
+</head>
+<body>
+
+<div id='map'></div>
+<div id="debugButtonContainer">
+  <button id="debugButton">Enable Debug Mode</button>
+</div>
+</div>
+
+<script>
+  let sourceMarker;
+  let destinationMarker;
+  let polyline;
+  let debug = false;
+  let heatmap;
+  let map;
+
+  $(document).ready(function(){
+// Add event listener to the button
+document.getElementById("debugButton").addEventListener("click", function() {
+  debug = !debug; // Toggle the value of debug variable
+  if (debug) {
+    this.textContent = "Disable Debug Mode";
+  } else {
+    this.textContent = "Enable Debug Mode";
+  }
+});
+
+L.mapbox.accessToken = 'pk.eyJ1IjoibWVocmRhZC1tYWhhYmFkaSIsImEiOiJjbGt4MTR3bG8xOTZzM2hvNHBleHY5aWdxIn0.Nh8a06JHMdGHtKufISXBIw';
+map = L.mapbox.map('map')
+    .setView([49.488716,6.67412], 10)
+    .addLayer(L.mapbox.styleLayer('mapbox://styles/mapbox/streets-v11'));
+
+// Start with a fixed marker.
+sourceMarker = L.marker(new L.LatLng(49.488716,6.6741), {
+  icon: L.mapbox.marker.icon({
+      'marker-color': '00ff00'
+  }), 
+  draggable: true
+}).bindPopup('Mapbox DC').addTo(map);
+
+destinationMarker = L.marker(new L.LatLng(49.58877,6.67481), {
+  icon: L.mapbox.marker.icon({
+      'marker-color': 'ff8888'
+  }), 
+  draggable: true
+}).bindPopup('Mapbox DC').addTo(map);
+
+polyline = L.polyline(sourceMarker.getLatLng(), {color: 'red'}).addTo(map) ; 
+heatmap = L.heatLayer([], {radius: 5, blur:1}).addTo(map) ; 
+
+sourceMarker.on('dragend', updateMap) ; 
+destinationMarker.on('dragend', updateMap) ; 
+});
+
+function updateMap(event) {
+  drawLine() ;
+}
+
+function drawLine() {
+  var ajaxRequest = new XMLHttpRequest();
+      ajaxRequest.onreadystatechange = function(){
+        if(ajaxRequest.readyState === 4){
+          //the request is completed, now check its status
+          if(ajaxRequest.status === 200){
+            const response = JSON.parse(ajaxRequest.responseText);
+            const path = JSON.parse(response.path);
+            polyline.setLatLngs(path);
+            if(debug === true) {
+              const points = JSON.parse(response.points);
+              heatmap.setLatLngs(points) ; 
+            }
+          }
+          else{
+            console.log("Status error: " + ajaxRequest.status);
+          }
+        }
+      }
+  const url = getURL();
+  ajaxRequest.open('GET', url);
+      ajaxRequest.send();
+}
+
+function getURL() {
+  let url = "http://localhost:8080/"
+          + sourceMarker.getLatLng().lat + "," + sourceMarker.getLatLng().lng + ","
+          + destinationMarker.getLatLng().lat + "," + destinationMarker.getLatLng().lng;
+  if (debug) {
+      url += '?debug=true';
+    } else {
+      url += '?debug=false';
+    }
+  return url ;
+}
+</script>
+
+</body>
+</html>
+

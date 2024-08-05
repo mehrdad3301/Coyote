@@ -1,7 +1,7 @@
 target/*
 out/*
 .idea/*
-RouteRunner.iml
+.vscode/*
 *.osm
 *.osm.bz2
 */target/*

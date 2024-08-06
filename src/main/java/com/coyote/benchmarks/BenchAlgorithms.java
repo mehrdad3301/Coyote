@@ -9,8 +9,8 @@ public class BenchAlgorithms {
 
     private enum City {
 
-        SAARLAND("benchmark/src/main/resources/saarland.osm"),
-        BadenWuerttemberg("benchmark/src/main/resources/baden-wuerttemberg.osm") ;
+        SAARLAND("saarland.osm"),
+        BadenWuerttemberg("baden-wuerttemberg.osm") ;
        private final String fileAddress ;
        City(String address) {
            this.fileAddress = address ;

@@ -12,11 +12,11 @@ public class BenchGraphBuilder {
 
     @Benchmark
     public void buildBadenWuGraph() throws Exception {
-        Graph.buildFromOSM("benchmark/src/main/resources/baden-wuerttemberg.osm") ;
+        Graph.buildFromOSM("baden-wuerttemberg.osm") ;
     }
     @Benchmark
     public void buildSaarlandGraph() throws Exception {
-        Graph.buildFromOSM("benchmark/src/main/resources/saarland.osm") ;
+        Graph.buildFromOSM("saarland.osm") ;
     }
 
     public static void main(String[] args) throws RunnerException {

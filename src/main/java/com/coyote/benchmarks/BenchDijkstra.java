@@ -30,8 +30,8 @@ public class BenchDijkstra {
         public void initState(BenchmarkParams params) throws Exception {
             switch (city) {
                 case "baden-wuerttemberg" ->
-                        buildGraph("benchmark/src/main/resources/baden-wuerttemberg.osm");
-                case "saarland" -> buildGraph("benchmark/src/main/resources/saarland.osm");
+                        buildGraph("baden-wuerttemberg.osm");
+                case "saarland" -> buildGraph("saarland.osm");
             }
         }
     }

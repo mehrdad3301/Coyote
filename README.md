@@ -3,8 +3,6 @@ It parses [Open Street Map](https://www.openstreetmap.org)'s data, and creates a
 After that, It's all left to graph algorithms to compute the shortest path. 
 Currently, Coyote implements Dijkstra, A*, and ATL (A* with triangle inequality).
 
-### Demo 
-
 ### How to Run  
 You can use Maven to install all the dependencies outlined in `pom.xml` and 
 build the project. After that, run `MapServer.java` in the `web` package. 
@@ -19,20 +17,10 @@ Additionally, there is a debug button, that visualizes the visited nodes when th
 query was run. It's fun visualizing different algorithms, and getting an idea 
 of their effectiveness in searching the graph. 
 
-<p align="center">
-  <figure style="display: inline-block; margin: 10px;">
-    <img src="assets/Dijkstra.png" alt="Image 1" width="200" />
-    <figcaption>Dijkstra</figcaption>
-  </figure>
-  <figure style="display: inline-block; margin: 10px;">
-    <img src="assets/AStar.png" alt="Image 2" width="200" />
-    <figcaption>A*</figcaption>
-  </figure>
-  <figure style="display: inline-block; margin: 10px;">
-    <img src="assets/ATL.png" alt="Image 3" width="200" />
-    <figcaption>ATL</figcaption>
-  </figure>
-</p>
+
+Dijkstra            |         AStar         | ATL
+:-------------------------:|:---------------------:|:-------------------------:
+![](assets/Dijkstra.png)   | ![](assets/AStar.png) | ![](assets/ATL.png)
 
 ### Benchmarks
 Coyote parses OSM's data and builds the underlying graph structure. 
